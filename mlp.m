@@ -13,8 +13,8 @@ V = cell(L);
 V{1} = X;
 
 eta = 2/size(X,2);
-% dGp = 0.001/size(X,2);
-% dGm = 0.001/size(X,2);
+ dGp = 500;
+ dGm = 500;
 
     
 maxiter = 50;
@@ -39,8 +39,12 @@ for iter = 1:maxiter
         df = V{l+1}.*(1-V{l+1});
         D = df.*(GxD);
         
-        dG = V{l}*D';
-        G{l} = G{l} - eta*dG;
+        VxD = V{l}*D';
+        dG = VxD;
+        dG(VxD >0) = -dGm;
+        dG(VxD==0) = 0;
+        dG(VxD <0) = dGp;
+        G{l} = G{l} + eta*dG;
         
         GxD = G{l}*D;
     end
