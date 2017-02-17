@@ -12,8 +12,8 @@ end
 V = cell(L);
 V{1} = X;
 
-dGp = 1000/size(X,2);
-dGm = 1000/size(X,2);
+dGp = 0.01/size(X,2);
+dGm = 0.01/size(X,2);
 
 maxiter = 50;
 mse = zeros(1,maxiter);
@@ -37,13 +37,15 @@ for iter = 1:maxiter
         df = V{l+1}.*(1-V{l+1}); % #(l+1) x m
         D = df.*(GxD); % #(l+1) x m
         
-        VxD = V{l}*D'; % {#(l) x m} * {m x #(l+1)} = #(l) x #(l+1)
-        dG = VxD; % #(l) x #(l+1)
-        % 이 경우는 m개의 set들의 dG를 모두 합한 다음에 이진화를 한 것이므로 사실상 근사를 거의 안했다고 보아야 한다.
-        % 이진화를 V{l}*D'과정에서 진행하는 경우부터가 문제이다.
-        dG(VxD >0) = -dGm;
-        dG(VxD==0) = 0;
-        dG(VxD <0) = dGp;
+        qV = V{l}; % #{l} x m. quantized V
+        qV(V{l}>0) = 1; % V{l}>=0, 각 곱을 위해 0과 1로 이진화.
+        
+        qD = D; % #{l+1} x m. quantized D
+        qD(D >0) = -dGm;
+        qD(D==0) = 0;
+        qD(D <0) = dGp;
+        
+        dG = qV*qD'; % {#(l) x m} * {m x #(l+1)} = #(l) x #(l+1)
         G{l} = G{l} + dG;
         
         GxD = G{l}*D; % #(l) x m
