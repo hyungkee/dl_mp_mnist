@@ -12,10 +12,10 @@ end
 V = cell(L);
 V{1} = X;
 
-dGp = 0.01/size(X,2);
-dGm = 0.01/size(X,2);
+dGp = 0.0003/size(X,2);
+dGm = 0.0003/size(X,2);
 
-maxiter = 50;
+maxiter = 100;
 mse = zeros(1,maxiter);
 
 
@@ -36,16 +36,13 @@ for iter = 1:maxiter
         
         df = V{l+1}.*(1-V{l+1}); % #(l+1) x m
         D = df.*(GxD); % #(l+1) x m
-        
-        qV = V{l}; % #{l} x m. quantized V
-        qV(V{l}>0) = 1; % V{l}>=0, 각 곱을 위해 0과 1로 이진화.
-        
+                
         qD = D; % #{l+1} x m. quantized D
         qD(D >0) = -dGm;
         qD(D==0) = 0;
         qD(D <0) = dGp;
         
-        dG = qV*qD'; % {#(l) x m} * {m x #(l+1)} = #(l) x #(l+1)
+        dG = repmat(sum(qD,2),1,size(V{l},1))'; % {#(l+1) x #(l)}' = #(l) x #(l+1)
         G{l} = G{l} + dG;
         
         GxD = G{l}*D; % #(l) x m
