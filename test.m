@@ -14,7 +14,7 @@ fprintf('Loading Data ...\n')
 images = loadMNISTImages('train-images.idx3-ubyte');
 labels = loadMNISTLabels('train-labels.idx1-ubyte');
 
-m = 1000;
+m = 5000;
 X = images(:,1:m); % 784 x m
 
 y = labels(1:m,:)'; % 1 x 60000
@@ -26,12 +26,19 @@ end
 
 %% Training NN
 fprintf('\nTraining Neural Network... \n')
-[model, mse] = mlpo(X, Y, h);
+
+options.active = 'ReLU';
+options.MaxIter = 400;
+options.epsilon_init = 0.3;
+options.eta = 2;
+options.dG = 0.002;
+
+[model, mse] = mlpo(X, Y, h, options);
 
 
 %% Implement Prediction
 pred_Y = mlpPred(model, X);
-[dummy, pred_y] = max(pred_Y, [], 1);
+[~, pred_y] = max(pred_Y, [], 1);
 
 fprintf('\nTraining Set Accuracy: %f\n', mean(double(pred_y == y)) * 100);
 
@@ -44,6 +51,6 @@ test_y = labels';
 test_y(test_y == 0) = 10; % 0 is replaced to 10
 
 pred_test_Y = mlpPred(model, test_X);
-[dummy, pred_test_y] = max(pred_test_Y, [], 1);
+[~, pred_test_y] = max(pred_test_Y, [], 1);
 
 fprintf('\nTesting Set Accuracy: %f\n', mean(double(pred_test_y == test_y)) * 100);
