@@ -1,4 +1,6 @@
-function [model, mse] = mlp(X, Y, h)
+function [model, mse] = mlpo(X, Y, h)
+
+% 이 함수는 online learning을 위한 함수이다.
 
 h = [size(X,1);h(:);size(Y,1)];
 L = numel(h);
@@ -12,15 +14,22 @@ end
 V = cell(L);
 V{1} = X;
 
-dGp = 0.005/size(X,2);
-dGm = 0.005/size(X,2);
+m = size(X,2);
 
-maxiter = 50;
+dGp = 0.01/size(X,2);
+dGm = 0.01/size(X,2);
+
+maxiter = 200;
 mse = zeros(1,maxiter);
 
 
 for iter = 1:maxiter
     fprintf('%d iterations..', iter)
+    
+%  for each data
+    for n = 1:m
+        V{1} = X(:,n); % 
+    end
     
 %     forward
     for l = 2:L
@@ -37,13 +46,12 @@ for iter = 1:maxiter
         df = V{l+1}.*(1-V{l+1}); % #(l+1) x m
         D = df.*(GxD); % #(l+1) x m
         
-        qV = zeros(size(V{l},1), size(V{l},); % #{l} x m. quantized V
-        qV(V{l}>0.5) = 1; % V{l}>=0, 각 곱을 위해 0과 1로 이진화. 0.01은 threshold
-        qV(V{l}<0.5) = 0;
+        qV = ones(size(V{l})); % #{l} x m. quantized V
+%        qV = zeros(size(V{l})); % #{l} x m. quantized V
+%        qV(V{l}>0) = 1; % V{l}>=0, 각 곱을 위해 0과 1로 이진화. 0.01은 threshold
         
-        qD = D; % #{l+1} x m. quantized D
+        qD = zeros(size(D)); % #{l+1} x m. quantized D
         qD(D >0) = -dGm;
-        qD(D==0) = 0;
         qD(D <0) = dGp;
         
         dG = qV*qD'; % {#(l) x m} * {m x #(l+1)} = #(l) x #(l+1)
