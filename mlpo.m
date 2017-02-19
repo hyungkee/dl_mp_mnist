@@ -19,10 +19,10 @@ V{1} = X;
 m = size(X,2);
 
 eta = 2/m;
-dGp = 0.01;
-dGm = 0.01;
+dGp = 0.001;
+dGm = 0.001;
 
-maxiter = 50;
+maxiter = 100;
 mse = zeros(1,maxiter);
 
 
@@ -45,9 +45,10 @@ for iter = 1:maxiter
             df = oV{l+1}.*(1-oV{l+1}); % #(l+1) x 1
             D = df.*(GxD); % #(l+1) x 1
             
-            dG = oV{l}*D'; % #(l) x #(l+1);
-            dG(dG>0) = dGm; % 이 크기만큼 결국 빼지기 때문에 dGm이다. (-eta*dG)
-            dG(dG<0) = -dGp; % 이 크기만큼 결국 더해지기 떄문에 dGp이다. (-eta*dG)
+            oVxD = oV{l}*D'; % #(l) x #(l+1)
+            dG = zeros(size(oVxD)); % #(l) x #(l+1)
+            dG(oVxD > dGm) = dGm; % 조건을 D>0으로 두게되면 oV 크기에 따른 차등이 사라져 자유도가 급감한다. 따라서 oVxD > dGm으로 둔다.
+            dG(oVxD < -dGp) = -dGp; % D<0또한 위와 같다. 따라서 OVxD < -dGp로 둔다.
             
             G{l} = G{l} - eta*dG; % #(l) x #(l+1)
             
