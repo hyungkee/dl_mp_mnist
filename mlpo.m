@@ -13,6 +13,10 @@ elseif strcmp(options.active,'ReLU')
     active = @ReLU;
     active_diff = @ReLU_diff;
     fprintf(' - active function : ReLU\n');
+elseif strcmp(options.active,'linear')
+    active = @linear;
+    active_diff = @linear_diff;
+    fprintf(' - active function : linear\n');
 end
 epsilon_init = options.epsilon_init;
 dGp = options.dG;
@@ -63,8 +67,8 @@ for iter = 1:maxiter
             oVxD = oV{l}*D'; % #(l) x #(l+1)
             dG = zeros(size(oVxD)); % #(l) x #(l+1)
             dG(oVxD > dGm) = dGm; % 조건을 D>0으로 두게되면 oV 크기에 따른 차등이 사라져 자유도가 급감한다. 따라서 oVxD > dGm으로 둔다.
-            dG(oVxD < -dGp) = -dGp; % D<0또한 위와 같다. 따라서 OVxD < -dGp로 둔다.
-            dG = oVxD;
+           dG(oVxD < -dGp) = -dGp; % D<0또한 위와 같다. 따라서 OVxD < -dGp로 둔다.
+%            dG = oVxD;
             
             G{l} = G{l} - (1/m)*eta*dG; % #(l) x #(l+1)
             
@@ -81,6 +85,15 @@ for iter = 1:maxiter
     mse(iter) = mean(dot(E(:),E(:)));
 
     fprintf('mse : %d\n', mse(iter));
+    
+    if mod(iter,50)==0
+        model.W = G;
+        pred_Y = mlpPred(model, X);
+        [~, pred_y] = max(pred_Y, [], 1);
+        [~, y] = max(Y, [], 1);
+
+        fprintf('\n[iter : %d]Training Set Accuracy: %f\n', iter, mean(double(pred_y == y)) * 100);
+    end
     
 end
 mse = mse(1:iter);

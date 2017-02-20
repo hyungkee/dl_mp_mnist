@@ -14,7 +14,7 @@ fprintf('Loading Data ...\n')
 images = loadMNISTImages('train-images.idx3-ubyte');
 labels = loadMNISTLabels('train-labels.idx1-ubyte');
 
-m = 5000;
+m = 1000;
 X = images(:,1:m); % 784 x m
 
 y = labels(1:m,:)'; % 1 x 60000
@@ -27,11 +27,11 @@ end
 %% Training NN
 fprintf('\nTraining Neural Network... \n')
 
-options.active = 'ReLU';
-options.MaxIter = 400;
-options.epsilon_init = 0.3;
+options.active = 'linear';
+options.MaxIter = 100;
+options.epsilon_init = 0.1;
 options.eta = 2;
-options.dG = 0.002;
+options.dG = 0.001;
 
 [model, mse] = mlpo(X, Y, h, options);
 
