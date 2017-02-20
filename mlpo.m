@@ -25,6 +25,7 @@ maxiter = options.MaxIter;
 eta = options.eta;
 fprintf(' - epsilon_init : %g, dG : %g, eta : %g, maxiter : %g\n', epsilon_init, dGp, eta, maxiter);
 fprintf('\n\n');
+acc_interval = 5;
 
 % parameter settings
 h = [size(X,1);h(:);size(Y,1)];
@@ -42,6 +43,7 @@ V{1} = X;
 
 m = size(X,2);
 mse = zeros(1,maxiter);
+acc = zeros(1,floor(maxiter/acc_interval));
 
 % iteration
 for iter = 1:maxiter
@@ -86,15 +88,32 @@ for iter = 1:maxiter
 
     fprintf('mse : %d\n', mse(iter));
     
-    if mod(iter,50)==0
+% set acc logs
+    if mod(iter,acc_interval)==0
         model.W = G;
         pred_Y = mlpPred(model, X);
         [~, pred_y] = max(pred_Y, [], 1);
         [~, y] = max(Y, [], 1);
-
-        fprintf('\n[iter : %d]Training Set Accuracy: %f\n', iter, mean(double(pred_y == y)) * 100);
+        
+        acc(floor(iter/acc_interval)) = mean(double(pred_y == y)) * 100;
+        fprintf('[iter : %d]Training Set Accuracy: %f\n', iter, acc(floor(iter/acc_interval)));
     end
     
 end
 mse = mse(1:iter);
 model.W = G;
+
+% draw graph
+figure
+ax1 = gca;
+hold on
+plot(1:maxiter,mse,'b');
+ax2 = axes('Position',get(ax1,'Position'),...
+       'YAxisLocation','right',...
+       'Color','none',...
+       'YLim', [0,100],...
+       'XColor','k','YColor','k');
+linkaxes([ax1 ax2],'x');
+hold on
+%plot(x,y3,'Parent',ax2);
+plot(acc_interval:acc_interval:iter,acc,'r');
