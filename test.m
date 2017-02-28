@@ -2,19 +2,13 @@
 %clear ; 
 close all; clc
 
-%% Setup the parameters
-input_layer_size  = 784;  % 28x28 Input Images of Digits
-hidden_layer_size = 49;   %  hidden units
-num_labels = 10;          % 10 labels, from 1 to 10
-h = [hidden_layer_size];
-
 %% Loading Data
 fprintf('Loading Data ...\n')
 
 images = loadMNISTImages('train-images.idx3-ubyte');
 labels = loadMNISTLabels('train-labels.idx1-ubyte');
 
-m = 10000;
+m = 1000;
 X = images(:,1:m); % 784 x m
 
 y = labels(1:m,:)'; % 1 x 60000
@@ -27,13 +21,19 @@ end
 %% Training NN
 fprintf('\nTraining Neural Network... \n')
 
-options.active = 'ReLU';
-options.MaxIter = 100;
-options.epsilon_init = 0.3;
-options.eta = 2;
-options.dG = 0.003;
+input_layer_size  = 784;  % 28x28 Input Images of Digits
+%hidden_layer_size = 100;   %  hidden units
+num_labels = 10;          % 10 labels, from 1 to 10
+h = [49 36];
 
-[model, mse] = mlp(X, Y, h, options);
+options.active = 'linear';
+options.MaxIter = 100;
+options.epsilon_init = 0.05;
+options.minG = 0;
+options.maxG = 1;
+options.stepG = 0.02; % conductance step
+
+[model, mse] = mlpo(X, Y, h, options);
 
 
 %% Implement Prediction

@@ -18,22 +18,24 @@ elseif strcmp(options.active,'linear')
     active_diff = @linear_diff;
     fprintf(' - active function : linear\n');
 end
-epsilon_init = options.epsilon_init;
-dGp = options.dG;
-dGm = options.dG;
+%epsilon_init = options.epsilon_init;
+minG = options.minG;
+maxG = options.maxG;
+stepG = options.stepG;
+%dGp = stepG;
+%dGm = stepG;
 maxiter = options.MaxIter;
-eta = options.eta;
-fprintf(' - epsilon_init : %g, dG : %g, eta : %g, maxiter : %g\n', epsilon_init, dGp, eta, maxiter);
-fprintf('\n\n');
-acc_interval = 2;
+acc_interval = 5; % for monitoring
 
 % parameter settings
 h = [size(X,1);h(:);size(Y,1)];
 L = numel(h);
-G = cell(L-1);
+Gp = cell(L-1);
+Gm = cell(L-1);
 
 for l = 1:L-1
-    G{l} = rand(h(l),h(l+1)) * epsilon_init * 2 - epsilon_init;
+    Gp{l} = rand(h(l),h(l+1)) * (maxG - minG) + minG; % minG ~ maxG
+    Gm{l} = rand(h(l),h(l+1)) * (maxG - minG) + minG; % minG ~ maxG
 end
 
 oZ = cell(L); % for online
@@ -88,6 +90,7 @@ for iter = 1:maxiter
 
     fprintf('mse : %d\n', mse(iter));
     
+% set acc logs
     if mod(iter,acc_interval)==0
         model.W = G;
         pred_Y = mlpPred(model, X);
@@ -95,14 +98,14 @@ for iter = 1:maxiter
         [~, y] = max(Y, [], 1);
         
         acc(floor(iter/acc_interval)) = mean(double(pred_y == y)) * 100;
-        fprintf('\n[iter : %d]Training Set Accuracy: %f\n', iter, acc(floor(iter/acc_interval)));
+        fprintf('[iter : %d]Training Set Accuracy: %f\n', iter, acc(floor(iter/acc_interval)));
     end
     
 end
 mse = mse(1:iter);
 model.W = G;
 
-%% draw graph
+% draw graph
 figure
 ax1 = gca;
 hold on
@@ -110,7 +113,7 @@ plot(1:maxiter,mse,'b');
 ax2 = axes('Position',get(ax1,'Position'),...
        'YAxisLocation','right',...
        'Color','none',...
-       'Y
+       'YLim', [0,100],...
        'XColor','k','YColor','k');
 linkaxes([ax1 ax2],'x');
 hold on

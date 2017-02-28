@@ -19,21 +19,21 @@ elseif strcmp(options.active,'linear')
     fprintf(' - active function : linear\n');
 end
 epsilon_init = options.epsilon_init;
-dGp = options.dG;
-dGm = options.dG;
+minG = options.minG;
+maxG = options.maxG;
+stepG = options.stepG;
 maxiter = options.MaxIter;
-eta = options.eta;
-fprintf(' - epsilon_init : %g, dG : %g, eta : %g, maxiter : %g\n', epsilon_init, dGp, eta, maxiter);
-fprintf('\n\n');
-acc_interval = 5;
+acc_interval = 5; % for monitoring mse
 
 % parameter settings
 h = [size(X,1);h(:);size(Y,1)];
 L = numel(h);
-G = cell(L-1);
+Gp = cell(L-1);
+Gm = cell(L-1);
 
 for l = 1:L-1
-    G{l} = rand(h(l),h(l+1)) * epsilon_init * 2 - epsilon_init;
+    Gp{l} = rand(h(l),h(l+1)) * (maxG - minG) * epsilon_init + minG;
+    Gm{l} = rand(h(l),h(l+1)) * (maxG - minG) * epsilon_init + minG;
 end
 
 oZ = cell(L); % for online
@@ -43,7 +43,7 @@ V{1} = X;
 
 m = size(X,2);
 mse = zeros(1,maxiter);
-acc = zeros(1,floor(maxiter/acc_interval));
+acc = zeros(1,floor(maxiter/acc_interval)); % for monitering mse
 
 % iteration
 for iter = 1:maxiter
@@ -55,8 +55,8 @@ for iter = 1:maxiter
         oV{1} = X(:,n); % #(1) x 1
 %     forward
         for l = 2:L
-            oZ{l} = G{l-1}'*oV{l-1}; % #(l) x 1
-            oV{l} = active(G{l-1}'*oV{l-1}); % #(l) x 1
+            oZ{l} = (Gp{l-1}'-Gm{l-1}')*oV{l-1}; % #(l) x 1
+            oV{l} = active((Gp{l-1}'-Gm{l-1}')*oV{l-1}); % #(l) x 1
         end
     
 %     backward
@@ -68,20 +68,21 @@ for iter = 1:maxiter
             
             oVxD = oV{l}*D'; % #(l) x #(l+1)
             dG = zeros(size(oVxD)); % #(l) x #(l+1)
-            dG(oVxD > dGm) = dGm; % 조건을 D>0으로 두게되면 oV 크기에 따른 차등이 사라져 자유도가 급감한다. 따라서 oVxD > dGm으로 둔다.
-           dG(oVxD < -dGp) = -dGp; % D<0또한 위와 같다. 따라서 OVxD < -dGp로 둔다.
+            dG(oVxD > 0) = stepG; % 조건을 D>0으로 두게되면 oV 크기에 따른 차등이 사라져 자유도가 급감한다. 따라서 oVxD > dGm으로 둔다.
+            dG(oVxD < 0) = -stepG; % D<0또한 위와 같다. 따라서 OVxD < -dGp로 둔다.
 %            dG = oVxD;
+
+%TODO : Gp, Gm을 위한 조정 알고리즘을 만들어야 한다. 함수로 만들자.
+            Gp{l} = Gp{l} - dG; % #(l) x #(l+1)
             
-            G{l} = G{l} - (1/m)*eta*dG; % #(l) x #(l+1)
-            
-            GxD = G{l}*D; % #(l) x 1
+            GxD = (Gp{l}-Gm{l})*D; % #(l) x 1
         end
     end
     
     
 % calculate mse
     for l = 2:L
-        V{l} = active(G{l-1}'*V{l-1}); % #(l) x m
+        V{l} = active((Gp{l-1}'-Gm{l-1}')*V{l-1}); % #(l) x m
     end
     E = V{L}-Y;
     mse(iter) = mean(dot(E(:),E(:)));
@@ -90,7 +91,12 @@ for iter = 1:maxiter
     
 % set acc logs
     if mod(iter,acc_interval)==0
-        model.W = G;
+
+        model.W = cell(L-1);
+        for l = 1:L-1
+            model.W{l} = Gp{l} - Gm{l};
+        end
+        
         pred_Y = mlpPred(model, X);
         [~, pred_y] = max(pred_Y, [], 1);
         [~, y] = max(Y, [], 1);
@@ -101,7 +107,10 @@ for iter = 1:maxiter
     
 end
 mse = mse(1:iter);
-model.W = G;
+model.W = cell(L-1);
+for l = 1:L-1
+    model.W{l} = Gp{l} - Gm{l};
+end
 
 % draw graph
 figure

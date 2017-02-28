@@ -1,0 +1,135 @@
+Loading Data ...
+
+Training Neural Network... 
+
+
+[online learning]
+ - active function : ReLU
+ - epsilon_init : 0.05, dG : 0.001, eta : 4, maxiter : 100
+
+
+1 iterations..mse : 9.678136e+02
+2 iterations..mse : 9.674987e+02
+3 iterations..mse : 9.669893e+02
+4 iterations..mse : 9.665867e+02
+5 iterations..mse : 9.661948e+02
+[iter : 5]Training Set Accuracy: 8.400000
+6 iterations..mse : 9.656889e+02
+7 iterations..mse : 9.654833e+02
+8 iterations..mse : 9.652991e+02
+9 iterations..mse : 9.650591e+02
+10 iterations..mse : 9.646440e+02
+[iter : 10]Training Set Accuracy: 15.100000
+11 iterations..mse : 9.639688e+02
+12 iterations..mse : 9.629896e+02
+13 iterations..mse : 9.617760e+02
+14 iterations..mse : 9.604384e+02
+15 iterations..mse : 9.589308e+02
+[iter : 15]Training Set Accuracy: 15.600000
+16 iterations..mse : 9.572058e+02
+17 iterations..mse : 9.553846e+02
+18 iterations..mse : 9.535304e+02
+19 iterations..mse : 9.517379e+02
+20 iterations..mse : 9.499932e+02
+[iter : 20]Training Set Accuracy: 16.600000
+21 iterations..mse : 9.481876e+02
+22 iterations..mse : 9.462868e+02
+23 iterations..mse : 9.444289e+02
+24 iterations..mse : 9.425376e+02
+25 iterations..mse : 9.405880e+02
+[iter : 25]Training Set Accuracy: 16.800000
+26 iterations..mse : 9.385455e+02
+27 iterations..mse : 9.365271e+02
+28 iterations..mse : 9.346184e+02
+29 iterations..mse : 9.327534e+02
+30 iterations..mse : 9.309408e+02
+[iter : 30]Training Set Accuracy: 17.700000
+31 iterations..mse : 9.291395e+02
+32 iterations..mse : 9.273014e+02
+33 iterations..mse : 9.254027e+02
+34 iterations..mse : 9.234588e+02
+35 iterations..mse : 9.215304e+02
+[iter : 35]Training Set Accuracy: 19.600000
+36 iterations..mse : 9.195418e+02
+37 iterations..mse : 9.174821e+02
+38 iterations..mse : 9.153380e+02
+39 iterations..mse : 9.131888e+02
+40 iterations..mse : 9.110118e+02
+[iter : 40]Training Set Accuracy: 21.300000
+41 iterations..mse : 9.087663e+02
+42 iterations..mse : 9.064325e+02
+43 iterations..mse : 9.040832e+02
+44 iterations..mse : 9.017434e+02
+45 iterations..mse : 8.993813e+02
+[iter : 45]Training Set Accuracy: 23.300000
+46 iterations..mse : 8.970169e+02
+47 iterations..mse : 8.946846e+02
+48 iterations..mse : 8.923086e+02
+49 iterations..mse : 8.898939e+02
+50 iterations..mse : 8.875261e+02
+[iter : 50]Training Set Accuracy: 26.500000
+51 iterations..mse : 8.851392e+02
+52 iterations..mse : 8.827598e+02
+53 iterations..mse : 8.804017e+02
+54 iterations..mse : 8.779888e+02
+55 iterations..mse : 8.755565e+02
+[iter : 55]Training Set Accuracy: 28.400000
+56 iterations..mse : 8.731114e+02
+57 iterations..mse : 8.706056e+02
+58 iterations..mse : 8.680563e+02
+59 iterations..mse : 8.654630e+02
+60 iterations..mse : 8.628765e+02
+[iter : 60]Training Set Accuracy: 31.000000
+61 iterations..mse : 8.602634e+02
+62 iterations..mse : 8.575598e+02
+63 iterations..mse : 8.549091e+02
+64 iterations..mse : 8.521990e+02
+65 iterations..mse : 8.494900e+02
+[iter : 65]Training Set Accuracy: 32.700000
+66 iterations..mse : 8.468540e+02
+67 iterations..mse : 8.442101e+02
+68 iterations..mse : 8.415346e+02
+69 iterations..mse : 8.388942e+02
+70 iterations..mse : 8.363188e+02
+[iter : 70]Training Set Accuracy: 32.800000
+71 iterations..mse : 8.338083e+02
+72 iterations..mse : 8.313183e+02
+73 iterations..mse : 8.288080e+02
+74 iterations..mse : 8.262904e+02
+75 iterations..mse : 8.237712e+02
+[iter : 75]Training Set Accuracy: 31.800000
+76 iterations..mse : 8.212369e+02
+77 iterations..mse : 8.187015e+02
+78 iterations..mse : 8.161433e+02
+79 iterations..mse : 8.136352e+02
+80 iterations..mse : 8.111548e+02
+[iter : 80]Training Set Accuracy: 31.000000
+81 iterations..mse : 8.087035e+02
+82 iterations..mse : 8.062076e+02
+83 iterations..mse : 8.036602e+02
+84 iterations..mse : 8.011354e+02
+85 iterations..mse : 7.985710e+02
+[iter : 85]Training Set Accuracy: 30.900000
+86 iterations..mse : 7.959611e+02
+87 iterations..mse : 7.933164e+02
+88 iterations..mse : 7.907074e+02
+89 iterations..mse : 7.881233e+02
+90 iterations..mse : 7.855433e+02
+[iter : 90]Training Set Accuracy: 30.400000
+91 iterations..mse : 7.829927e+02
+92 iterations..mse : 7.804464e+02
+93 iterations..mse : 7.778622e+02
+94 iterations..mse : 7.753072e+02
+95 iterations..mse : 7.727577e+02
+[iter : 95]Training Set Accuracy: 30.300000
+96 iterations..mse : 7.702225e+02
+97 iterations..mse : 7.676987e+02
+98 iterations..mse : 7.652146e+02
+99 iterations..mse : 7.627009e+02
+100 iterations..mse : 7.601632e+02
+[iter : 100]Training Set Accuracy: 29.900000
+
+Training Set Accuracy: 29.900000
+
+Testing Set Accuracy: 29.680000
+>> 

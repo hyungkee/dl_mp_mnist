@@ -34,6 +34,9 @@ G = cell(L-1);
 for l = 1:L-1
     G{l} = rand(h(l),h(l+1)) * epsilon_init * 2 - epsilon_init;
 end
+if exist('options', 'var') && ~isempty(options) && isfield(options, 'initW')
+    G = options.initW;
+end
 
 Z = cell(L);
 V = cell(L);
