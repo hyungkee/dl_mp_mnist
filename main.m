@@ -1,6 +1,9 @@
 %% Initialization
 %clear ; 
 close all; clc
+addpath('activation');
+addpath('mnist-data');
+addpath('mnist-lib');
 
 %% Loading Data
 fprintf('Loading Data ...\n')
