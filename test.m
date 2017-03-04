@@ -26,7 +26,8 @@ input_layer_size  = 784;  % 28x28 Input Images of Digits
 num_labels = 10;          % 10 labels, from 1 to 10
 h = [49 36];
 
-options.active = 'linear';
+options.active = @(z)linear(z, 1);
+options.active_diff = @(z)linear_diff(z, 1);
 options.MaxIter = 100;
 options.epsilon_init = 0.05;
 options.minG = 0;
@@ -37,7 +38,7 @@ options.stepG = 0.02; % conductance step
 
 
 %% Implement Prediction
-pred_Y = mlpPred(model, X);
+pred_Y = mlpPred(model, X, options.active);
 [~, pred_y] = max(pred_Y, [], 1);
 
 fprintf('\nTraining Set Accuracy: %f\n', mean(double(pred_y == y)) * 100);
@@ -50,7 +51,7 @@ test_X = images;
 test_y = labels';
 test_y(test_y == 0) = 10; % 0 is replaced to 10
 
-pred_test_Y = mlpPred(model, test_X);
+pred_test_Y = mlpPred(model, test_X, options.active);
 [~, pred_test_y] = max(pred_test_Y, [], 1);
 
 fprintf('\nTesting Set Accuracy: %f\n', mean(double(pred_test_y == test_y)) * 100);

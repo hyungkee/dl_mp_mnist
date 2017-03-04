@@ -1,4 +1,4 @@
-function y = mlpPred(model, X)
+function y = mlpPred(model, X, active)
 % Multilayer perceptron prediction
 % Input:
 %   model: model structure
@@ -11,6 +11,6 @@ L = length(W)+1;
 Z = cell(L);
 Z{1} = X;
 for l = 2:L
-    Z{l} = sigmoid(W{l-1}'*Z{l-1});
+    Z{l} = active(W{l-1}'*Z{l-1});
 end
 y = Z{L};

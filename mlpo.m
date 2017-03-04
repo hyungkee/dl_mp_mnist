@@ -5,19 +5,8 @@ fprintf('\n\n');
 fprintf('[online learning]\n');
 
 % option¿–±‚
-if strcmp(options.active,'sigmoid')
-    active = @sigmoid;
-    active_diff = @sigmoid_diff;
-    fprintf(' - active function : sigmoid\n');
-elseif strcmp(options.active,'ReLU')
-    active = @ReLU;
-    active_diff = @ReLU_diff;
-    fprintf(' - active function : ReLU\n');
-elseif strcmp(options.active,'linear')
-    active = @linear;
-    active_diff = @linear_diff;
-    fprintf(' - active function : linear\n');
-end
+active = options.active;
+active_diff = options.active_diff;
 epsilon_init = options.epsilon_init;
 minG = options.minG;
 maxG = options.maxG;
@@ -97,7 +86,7 @@ for iter = 1:maxiter
             model.W{l} = Gp{l} - Gm{l};
         end
         
-        pred_Y = mlpPred(model, X);
+        pred_Y = mlpPred(model, X, active);
         [~, pred_y] = max(pred_Y, [], 1);
         [~, y] = max(Y, [], 1);
         
